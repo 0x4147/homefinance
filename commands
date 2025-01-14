@@ -1,0 +1,14 @@
+minikube start
+
+kubectl apply -f home-finance-secret.yaml
+
+kubectl apply -f home-finance.yaml
+
+kubectl delete deployment homefinance-deployment
+kubectl delete service homefinance-service
+
+Kubectl get all
+kubectl get service
+kubectl get pod
+Kubectl get all | grep searchname
+kubectl get namespace

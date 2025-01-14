@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Transaction Tracker</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .result-area {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Transaction Tracker</h1>
+
+    <div class="form-group">
+        <label for="transactionAmount">Amount</label>
+        <input type="text" class="form-control" id="transactionAmount" placeholder="Enter amount">
+    </div>
+
+    <div class="form-group">
+        <label for="transactionType">Transaction Type</label>
+        <select class="form-control" id="transactionType">
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+            <option value="Investment">Investment</option>
+        </select>
+    </div>
+
+    <button id="addTransaction" class="btn btn-primary">Add</button>
+    <button id="getTransactions" class="btn btn-secondary">Get Transactions</button>
+
+    <h2 class="mt-4">Results</h2>
+    <div id="results" class="result-area">
+        <!-- Results will be displayed here -->
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    const transactions = [];
+
+    document.getElementById('addTransaction').onclick = function() {
+        const amount = document.getElementById('transactionAmount').value;
+        const type = document.getElementById('transactionType').value;
+
+        if (amount) {
+            transactions.push({ amount: amount, type: type });
+            document.getElementById('transactionAmount').value = ''; // Clear the input field
+            alert('Transaction added!');
+        } else {
+            alert('Please enter an amount.');
+        }
+    };
+
+    document.getElementById('getTransactions').onclick = function() {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // Clear previous results
+
+        if (transactions.length === 0) {
+            resultsDiv.innerHTML = 'No transactions added yet.';
+            return;
+        }
+
+        transactions.forEach((transaction, index) => {
+            resultsDiv.innerHTML += `<p>${index + 1}. ${transaction.type}: $${transaction.amount}</p>`;
+        });
+    };
+</script>
+</body>
+</html>
