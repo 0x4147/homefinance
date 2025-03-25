@@ -1,12 +1,10 @@
-package ca.homefinance.homefinance;
+package ca.homefinance.homefinance.service;
 
+import ca.homefinance.homefinance.repository.TransactionRepository;
+import ca.homefinance.homefinance.entity.Transaction;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.pulsar.PulsarProperties;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;

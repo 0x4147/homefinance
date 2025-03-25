@@ -3,82 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Transaction Tracker</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Personal Finance Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        .result-area {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-top: 20px;
-            height: 150px;
-            overflow-y: auto;
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         }
     </style>
 </head>
 <body>
-<div class="container mt-4">
-    <h1>Transaction Tracker</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" href="#">Finance Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active text-primary fw-bold" href="#">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-secondary" href="#">Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-secondary" href="#">Settings</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-    <div class="form-group">
-        <label for="transactionAmount">Amount</label>
-        <input type="text" class="form-control" id="transactionAmount" placeholder="Enter amount">
+<div class="container mt-5">
+    <div class="row">
+        <!-- Income & Expense Form -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Add Income / Expense
+                </div>
+                <div class="card-body">
+                    <form id="finance-form">
+                        <div class="mb-3">
+                            <label for="entry-type" class="form-label">Type</label>
+                            <select class="form-select" id="entry-type" required>
+                                <option value="" disabled selected>Select type</option>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="entry-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="entry-amount" placeholder="Enter amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-name" class="form-label">Name</label>
+                            <textarea class="form-control" id="entry-name" rows="1" placeholder="Name" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-category" class="form-label">Category</label>
+                            <select class="form-select" id="entry-category" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option value="Utility Bill">Utility Bill</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Mortgage">Mortgage</option>
+                                <option value="Property tax">Property tax</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Car repair">Car repair</option>
+                                <option value="Home maintenance">Home maintenance</option>
+                                <option value="Salary">Salary</option>
+                                <option value="Rental Income">Rental Income</option>
+                                <option value="Government Grants">Government Grants</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="entry-description" rows="2" placeholder="Optional description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="entry-receipt" class="form-label">Attach Receipt</label>
+                            <input type="file" class="form-control" id="entry-receipt" accept="image/*,application/pdf">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Summary
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="mb-3">Total Income: <span class="text-success fw-bold" id="total-income">$0.00</span></h5>
+                    <h5 class="mb-3">Total Expenses: <span class="text-danger fw-bold" id="total-expenses">$0.00</span></h5>
+                    <h5>Net Balance: <span class="text-info fw-bold" id="net-balance">$0.00</span></h5>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="transactionType">Transaction Type</label>
-        <select class="form-control" id="transactionType">
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-            <option value="Investment">Investment</option>
-        </select>
-    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Recent Transactions
+                </div>
+                <div class="card-body">
+                    <!-- Date Filter Inputs -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="start-date" class="form-label">Start Date:</label>
+                            <input type="date" id="start-date" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="end-date" class="form-label">End Date:</label>
+                            <input type="date" id="end-date" class="form-control">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary w-100" onclick="filterTransactions()">Filter</button>
+                        </div>
+                    </div>
 
-    <button id="addTransaction" class="btn btn-primary">Add</button>
-    <button id="getTransactions" class="btn btn-secondary">Get Transactions</button>
-
-    <h2 class="mt-4">Results</h2>
-    <div id="results" class="result-area">
-        <!-- Results will be displayed here -->
+                    <table class="table table-hover">
+                        <thead class="table-primary">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Receipt</th>
+                        </tr>
+                        </thead>
+                        <tbody id="transactions-body">
+                        <!-- Dynamically populated rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const transactions = [];
+    // Sample script to manage adding transactions dynamically
+    document.getElementById('finance-form').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    document.getElementById('addTransaction').onclick = function() {
-        const amount = document.getElementById('transactionAmount').value;
-        const type = document.getElementById('transactionType').value;
+        const type = document.getElementById('entry-type').value;
+        const date = document.getElementById('entry-date').value;
+        const amount = parseFloat(document.getElementById('entry-amount').value).toFixed(2);
+        const description = document.getElementById('entry-description').value || '-';
 
-        if (amount) {
-            transactions.push({ amount: amount, type: type });
-            document.getElementById('transactionAmount').value = ''; // Clear the input field
-            alert('Transaction added!');
+        const receiptInput = document.getElementById('entry-receipt');
+        const receipt = receiptInput.files.length > 0 ? receiptInput.files[0].name : '-';
+
+        const transactionsBody = document.getElementById('transactions-body');
+
+        const row = `<tr>
+                <td>${date}</td>
+                <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                <td>${description}</td>
+                <td>${type === 'income' ? '+' : '-'}$${amount}</td>
+                <td>${receipt}</td>
+            </tr>`;
+
+        transactionsBody.innerHTML += row;
+
+        // Update totals (mock implementation)
+        const totalIncomeElement = document.getElementById('total-income');
+        const totalExpensesElement = document.getElementById('total-expenses');
+        const netBalanceElement = document.getElementById('net-balance');
+
+        let totalIncome = parseFloat(totalIncomeElement.textContent.slice(1));
+        let totalExpenses = parseFloat(totalExpensesElement.textContent.slice(1));
+
+        if (type === 'income') {
+            totalIncome += parseFloat(amount);
         } else {
-            alert('Please enter an amount.');
-        }
-    };
-
-    document.getElementById('getTransactions').onclick = function() {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Clear previous results
-
-        if (transactions.length === 0) {
-            resultsDiv.innerHTML = 'No transactions added yet.';
-            return;
+            totalExpenses += parseFloat(amount);
         }
 
-        transactions.forEach((transaction, index) => {
-            resultsDiv.innerHTML += `<p>${index + 1}. ${transaction.type}: $${transaction.amount}</p>`;
-        });
-    };
+        totalIncomeElement.textContent = `$${totalIncome.toFixed(2)}`;
+        totalExpensesElement.textContent = `$${totalExpenses.toFixed(2)}`;
+        netBalanceElement.textContent = `$${(totalIncome - totalExpenses).toFixed(2)}`;
+
+        // Reset the form
+        this.reset();
+    });
 </script>
 </body>
 </html>

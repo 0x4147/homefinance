@@ -1,6 +1,8 @@
-package ca.homefinance.homefinance;
+package ca.homefinance.homefinance.service;
 
-import org.bson.types.ObjectId;
+import ca.homefinance.homefinance.repository.ReceiptRepository;
+import ca.homefinance.homefinance.entity.Receipt;
+import ca.homefinance.homefinance.entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

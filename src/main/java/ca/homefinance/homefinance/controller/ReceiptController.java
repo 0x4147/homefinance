@@ -1,10 +1,10 @@
-package ca.homefinance.homefinance;
+package ca.homefinance.homefinance.controller;
 
-import org.bson.types.ObjectId;
+import ca.homefinance.homefinance.entity.Receipt;
+import ca.homefinance.homefinance.service.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
