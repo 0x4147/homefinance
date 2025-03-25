@@ -1,11 +1,10 @@
 package ca.homefinance.homefinance.repository;
 
 import ca.homefinance.homefinance.entity.Receipt;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
-public interface ReceiptRepository extends MongoRepository<Receipt, ObjectId> {
-
+public interface ReceiptRepository extends JpaRepository<Receipt, Integer> {
+    Receipt findByFilename(String filename);
 }

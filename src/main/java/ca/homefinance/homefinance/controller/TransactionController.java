@@ -1,38 +1,40 @@
 package ca.homefinance.homefinance.controller;
 
-import ca.homefinance.homefinance.service.TransactionService;
 import ca.homefinance.homefinance.entity.Transaction;
-import org.bson.types.ObjectId;
+import ca.homefinance.homefinance.service.TransactionService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1")
+@AllArgsConstructor
+@RequestMapping("/api/v1/transaction")
 public class TransactionController {
 
     @Autowired
-    private TransactionService transactionService;
+    private final TransactionService service;
 
-    @GetMapping("/transactions")
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
-        return new ResponseEntity<List<Transaction>>(transactionService.getAllTransactions(), HttpStatus.OK);
+    @GetMapping
+    public List<Transaction> getAllTransactions() {
+        return service.getAllTransactions();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Transaction>> getTransactionsById(@PathVariable ObjectId id) {
-        return new ResponseEntity<Optional<Transaction>> (transactionService.getTransactionsById(id), HttpStatus.OK);
+    @PostMapping
+    public Transaction addTransaction(@RequestBody Transaction transaction) {
+        return service.saveTransaction(transaction);
     }
 
-    @GetMapping("/bytype/{type}")
-    public ResponseEntity<Optional<List<Transaction>>> getTransactionsByType(@PathVariable String type){
-        return new ResponseEntity<Optional<List<Transaction>>> (transactionService.getTransactionsByType(type), HttpStatus.OK);
+    @GetMapping("/type/{type}")
+    public List<Transaction> getTransactionsByType(@PathVariable String type) {
+        return service.getTransactionsByType(type);
+    }
+
+    @GetMapping("/date-range")
+    public List<Transaction> getTransactionsByDateRange(
+            @RequestParam LocalDate start,
+            @RequestParam LocalDate end) {
+        return service.getTransactionsByDateRange(start, end);
     }
 }

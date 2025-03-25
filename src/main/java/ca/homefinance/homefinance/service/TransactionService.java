@@ -1,29 +1,31 @@
 package ca.homefinance.homefinance.service;
 
-import ca.homefinance.homefinance.repository.TransactionRepository;
 import ca.homefinance.homefinance.entity.Transaction;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
+import ca.homefinance.homefinance.repository.TransactionRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TransactionService {
 
-    @Autowired
-    private TransactionRepository transactionRepository;
+    private final TransactionRepository repository;
 
-    public List<Transaction> getAllTransactions(){
-        return transactionRepository.findAll();
+    public List<Transaction> getAllTransactions() {
+        return repository.findAll();
     }
 
-    public Optional<Transaction> getTransactionsById(ObjectId id) {
-        return transactionRepository.findById(id);
+    public Transaction saveTransaction(Transaction transaction) {
+        return repository.save(transaction);
     }
 
-    public Optional<List<Transaction>> getTransactionsByType(String type){
-        return transactionRepository.findTransactionsByType(type);
+    public List<Transaction> getTransactionsByType(String type) {
+        return repository.findByType(type);
+    }
+
+    public List<Transaction> getTransactionsByDateRange(LocalDate start, LocalDate end) {
+        return repository.findByDateBetween(start, end);
     }
 }
