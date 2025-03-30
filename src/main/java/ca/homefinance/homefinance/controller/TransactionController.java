@@ -16,25 +16,25 @@ public class TransactionController {
     @Autowired
     private final TransactionService service;
 
-    @GetMapping
-    public List<Transaction> getAllTransactions() {
-        return service.getAllTransactions();
-    }
-
-    @PostMapping
-    public Transaction addTransaction(@RequestBody Transaction transaction) {
-        return service.saveTransaction(transaction);
-    }
-
-    @GetMapping("/type/{type}")
-    public List<Transaction> getTransactionsByType(@PathVariable String type) {
-        return service.getTransactionsByType(type);
-    }
-
-    @GetMapping("/date-range")
-    public List<Transaction> getTransactionsByDateRange(
-            @RequestParam LocalDate start,
-            @RequestParam LocalDate end) {
-        return service.getTransactionsByDateRange(start, end);
-    }
+//    @GetMapping
+//    public List<Transaction> getAllTransactions() {
+//        return service.getAllTransactions();
+//    }
+//
+//    @PostMapping
+//    public Transaction addTransaction(@RequestBody Transaction transaction) {
+//        return service.saveTransaction(transaction);
+//    }
+//
+//    @GetMapping("/type/{type}")
+//    public List<Transaction> getTransactionsByType(@PathVariable String type) {
+//        return service.getTransactionsByType(type);
+//    }
+//
+//    @GetMapping("/date-range")
+//    public List<Transaction> getTransactionsByDateRange(
+//            @RequestParam LocalDate start,
+//            @RequestParam LocalDate end) {
+//        return service.getTransactionsByDateRange(start, end);
+//    }
 }

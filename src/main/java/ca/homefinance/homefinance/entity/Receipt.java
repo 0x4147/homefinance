@@ -2,7 +2,7 @@ package ca.homefinance.homefinance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.bson.types.ObjectId;
+
 
 import java.time.LocalDate;
 
@@ -29,5 +29,5 @@ public class Receipt {
 
     @ManyToOne
     @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", nullable = false)
-    private Transaction transactionId;
+    private Transaction transaction;
 }

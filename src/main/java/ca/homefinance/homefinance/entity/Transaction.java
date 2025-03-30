@@ -20,7 +20,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
-    private Integer id;
+    private Integer transactionId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
@@ -43,11 +43,11 @@ public class Transaction {
     private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = true)
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id", nullable = true)
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     private Person person;
 
     public enum AccountType {

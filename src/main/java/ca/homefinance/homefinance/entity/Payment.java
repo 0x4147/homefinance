@@ -35,15 +35,15 @@ public class Payment {
     private LocalDate endDateRange;
 
     @ManyToOne
-    @JoinColumn(name = "from_person_id", referencedColumnName = "person_id", nullable = true)
-    private Person fromPersonId;
+    @JoinColumn(name = "from_person_id", referencedColumnName = "person_id")
+    private Person fromPerson;
 
     @ManyToOne
-    @JoinColumn(name = "to_person_id", referencedColumnName = "person_id", nullable = true)
-    private Person toPersonId;
+    @JoinColumn(name = "to_person_id", referencedColumnName = "person_id")
+    private Person toPerson;
 
     @ManyToOne
-    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id", nullable = true)
-    private Transaction transactionId;
+    @JoinColumn(name = "transaction_id", referencedColumnName = "transaction_id")
+    private Transaction transaction;
 
 }
