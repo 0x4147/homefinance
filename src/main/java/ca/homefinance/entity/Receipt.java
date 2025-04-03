@@ -1,4 +1,4 @@
-package ca.homefinance.homefinance.entity;
+package ca.homefinance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

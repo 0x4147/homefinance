@@ -1,12 +1,9 @@
-package ca.homefinance.homefinance.controller;
+package ca.homefinance.controller;
 
-import ca.homefinance.homefinance.entity.Transaction;
-import ca.homefinance.homefinance.service.TransactionService;
+import ca.homefinance.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

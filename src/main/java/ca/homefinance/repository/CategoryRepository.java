@@ -1,6 +1,6 @@
-package ca.homefinance.homefinance.repository;
+package ca.homefinance.repository;
 
-import ca.homefinance.homefinance.entity.Category;
+import ca.homefinance.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

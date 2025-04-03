@@ -1,9 +1,9 @@
-package ca.homefinance.homefinance.service;
+package ca.homefinance.service;
 
-import ca.homefinance.homefinance.entity.Category;
-import ca.homefinance.homefinance.entity.Person;
-import ca.homefinance.homefinance.entity.Transaction;
-import ca.homefinance.homefinance.repository.TransactionRepository;
+import ca.homefinance.entity.Category;
+import ca.homefinance.entity.Transaction;
+import ca.homefinance.entity.Person;
+import ca.homefinance.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,7 @@ public class TransactionService {
         return transactionRepository.findByDetailsContainingIgnoreCase(details);
     }
 
-    public List<Transaction> getByCategory(Integer categoryId) {
+    public List<Transaction> getByCategory(Category categoryId) {
         return transactionRepository.findByCategory(categoryId);
     }
 
@@ -59,7 +59,7 @@ public class TransactionService {
         return transactionRepository.findByTransactionType(transactionType);
     }
 
-    public List<Transaction> getByPerson(Integer personId) {
+    public List<Transaction> getByPerson(Person personId) {
         return transactionRepository.findByPerson(personId);
     }
 

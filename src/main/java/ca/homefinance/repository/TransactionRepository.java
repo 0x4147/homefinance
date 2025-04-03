@@ -1,8 +1,8 @@
-package ca.homefinance.homefinance.repository;
+package ca.homefinance.repository;
 
-import ca.homefinance.homefinance.entity.Category;
-import ca.homefinance.homefinance.entity.Person;
-import ca.homefinance.homefinance.entity.Transaction;
+import ca.homefinance.entity.Category;
+import ca.homefinance.entity.Transaction;
+import ca.homefinance.entity.Person;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
@@ -24,13 +23,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 
     List<Transaction> findByDetailsContainingIgnoreCase(String details);
 
-    List<Transaction> findByCategory(Integer categoryId);
+    List<Transaction> findByCategory(Category categoryId);
 
     List<Transaction> findByAccount(Transaction.AccountType account);
 
     List<Transaction> findByTransactionType(Transaction.TransactionType transactionType);
 
-    List<Transaction> findByPerson(Integer personId);
+    List<Transaction> findByPerson(Person personId);
 
     @Query("SELECT t FROM Transaction t WHERE " +
             "(:amount IS NULL OR t.amount = :amount) AND " +

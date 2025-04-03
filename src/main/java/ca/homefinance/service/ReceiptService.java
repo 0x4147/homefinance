@@ -1,8 +1,6 @@
-package ca.homefinance.homefinance.service;
+package ca.homefinance.service;
 
-import ca.homefinance.homefinance.repository.ReceiptRepository;
-import ca.homefinance.homefinance.entity.Receipt;
-import ca.homefinance.homefinance.entity.Transaction;
+import ca.homefinance.repository.ReceiptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
