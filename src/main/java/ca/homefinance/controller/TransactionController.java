@@ -1,9 +1,15 @@
 package ca.homefinance.controller;
 
+import ca.homefinance.entity.Transaction;
 import ca.homefinance.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -11,27 +17,21 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
 
     @Autowired
-    private final TransactionService service;
+    private final TransactionService transactionService;
 
-//    @GetMapping
-//    public List<Transaction> getAllTransactions() {
-//        return service.getAllTransactions();
-//    }
-//
-//    @PostMapping
-//    public Transaction addTransaction(@RequestBody Transaction transaction) {
-//        return service.saveTransaction(transaction);
-//    }
-//
-//    @GetMapping("/type/{type}")
-//    public List<Transaction> getTransactionsByType(@PathVariable String type) {
-//        return service.getTransactionsByType(type);
-//    }
-//
-//    @GetMapping("/date-range")
-//    public List<Transaction> getTransactionsByDateRange(
-//            @RequestParam LocalDate start,
-//            @RequestParam LocalDate end) {
-//        return service.getTransactionsByDateRange(start, end);
-//    }
+    @GetMapping("/getAllTransactions")
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getTransactionsByDateRange")
+    public ResponseEntity<List<Transaction>> getTransactionsByDateRange(@RequestParam Date start, @RequestParam Date end) {
+        return new ResponseEntity<>(transactionService.getTransactionsByDateRange(start, end), HttpStatus.OK);
+    }
+
+    @PostMapping("/saveTransaction")
+    public ResponseEntity<Transaction> saveTransaction(@RequestBody Transaction transaction) {
+        return new ResponseEntity<>(transactionService.saveTransaction(transaction), HttpStatus.OK);
+    }
+
 }

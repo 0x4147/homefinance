@@ -1,234 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Finance Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .card {
-            border: none;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .card-header {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-        .btn-success {
-            background-color: #28a745;
-            border: none;
-            transition: background-color 0.3s;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .table thead {
-            background-color: #007bff;
-            color: white;
-        }
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-    </style>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light bg-white">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold text-primary" href="#">Finance Manager</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active text-primary fw-bold" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-secondary" href="#">Reports</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-secondary" href="#">Settings</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="container mt-5">
-    <div class="row">
-        <!-- Income & Expense Form -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    Add Income / Expense
-                </div>
-                <div class="card-body">
-                    <form id="finance-form">
-                        <div class="mb-3">
-                            <label for="entry-type" class="form-label">Type</label>
-                            <select class="form-select" id="entry-type" required>
-                                <option value="" disabled selected>Select type</option>
-                                <option value="income">Income</option>
-                                <option value="expense">Expense</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="entry-date" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-amount" class="form-label">Amount</label>
-                            <input type="number" class="form-control" id="entry-amount" placeholder="Enter amount" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-name" class="form-label">Name</label>
-                            <textarea class="form-control" id="entry-name" rows="1" placeholder="Name" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-category" class="form-label">Category</label>
-                            <select class="form-select" id="entry-category" required>
-                                <option value="" disabled selected>Select category</option>
-                                <option value="Utility Bill">Utility Bill</option>
-                                <option value="Groceries">Groceries</option>
-                                <option value="Transportation">Transportation</option>
-                                <option value="Healthcare">Healthcare</option>
-                                <option value="Entertainment">Entertainment</option>
-                                <option value="Mortgage">Mortgage</option>
-                                <option value="Property tax">Property tax</option>
-                                <option value="Insurance">Insurance</option>
-                                <option value="Car repair">Car repair</option>
-                                <option value="Home maintenance">Home maintenance</option>
-                                <option value="Salary">Salary</option>
-                                <option value="Rental Income">Rental Income</option>
-                                <option value="Government Grants">Government Grants</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-description" class="form-label">Description</label>
-                            <textarea class="form-control" id="entry-description" rows="2" placeholder="Optional description"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="entry-receipt" class="form-label">Attach Receipt</label>
-                            <input type="file" class="form-control" id="entry-receipt" accept="image/*,application/pdf">
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Submit</button>
-                    </form>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Personal Finance Manager</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .navbar {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .card {
+                border: none;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .card-header {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+            .btn-success {
+                background-color: #28a745;
+                border: none;
+                transition: background-color 0.3s;
+            }
+            .btn-success:hover {
+                background-color: #218838;
+            }
+            .table thead {
+                background-color: #007bff;
+                color: white;
+            }
+            .form-control:focus {
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-primary" href="#">Finance Manager</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active text-primary fw-bold" href="#">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="#">Reports</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="#">Settings</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
+        </nav>
 
-        <!-- Summary Section -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    Summary
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="mb-3">Total Income: <span class="text-success fw-bold" id="total-income">$0.00</span></h5>
-                    <h5 class="mb-3">Total Expenses: <span class="text-danger fw-bold" id="total-expenses">$0.00</span></h5>
-                    <h5>Net Balance: <span class="text-info fw-bold" id="net-balance">$0.00</span></h5>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    Recent Transactions
-                </div>
-                <div class="card-body">
-                    <!-- Date Filter Inputs -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="start-date" class="form-label">Start Date:</label>
-                            <input type="date" id="start-date" class="form-control">
+        <div class="container mt-5">
+            <div class="row">
+                <!-- Income & Expense Form -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Add Income / Expense
                         </div>
-                        <div class="col-md-4">
-                            <label for="end-date" class="form-label">End Date:</label>
-                            <input type="date" id="end-date" class="form-control">
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button class="btn btn-primary w-100" onclick="filterTransactions()">Filter</button>
+                        <div class="card-body">
+                            <form id="transaction-entry-form">
+                                <div class="mb-3">
+                                    <label for="entry-type" class="form-label">Type</label>
+                                    <select class="form-select" id="entry-type" required>
+                                        <option value="" disabled selected>Select type</option>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-date" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="entry-date" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-amount" class="form-label">Amount</label>
+                                    <input type="number" class="form-control" id="entry-amount" placeholder="Enter amount" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-name" class="form-label">Name</label>
+                                    <textarea class="form-control" id="entry-name" rows="1" placeholder="Name" required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-category" class="form-label">Category</label>
+                                    <select class="form-select" id="entry-category" required>
+                                        <option value="" disabled selected>Select category</option>
+                                        <option value="Utility Bill">Utility Bill</option>
+                                        <option value="Groceries">Groceries</option>
+                                        <option value="Transportation">Transportation</option>
+                                        <option value="Healthcare">Healthcare</option>
+                                        <option value="Entertainment">Entertainment</option>
+                                        <option value="Mortgage">Mortgage</option>
+                                        <option value="Property tax">Property tax</option>
+                                        <option value="Insurance">Insurance</option>
+                                        <option value="Car repair">Car repair</option>
+                                        <option value="Home maintenance">Home maintenance</option>
+                                        <option value="Salary">Salary</option>
+                                        <option value="Rental Income">Rental Income</option>
+                                        <option value="Government Grants">Government Grants</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="entry-description" rows="2" placeholder="Optional description"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-receipt" class="form-label">Attach Receipt</label>
+                                    <input type="file" class="form-control" id="entry-receipt" accept="image/*,application/pdf">
+                                </div>
+                                <button id="submit-btn" type="submit" class="btn btn-success w-100">Submit</button>
+                            </form>
                         </div>
                     </div>
+                </div>
 
-                    <table class="table table-hover">
-                        <thead class="table-primary">
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Receipt</th>
-                        </tr>
-                        </thead>
-                        <tbody id="transactions-body">
-                        <!-- Dynamically populated rows -->
-                        </tbody>
-                    </table>
+                <!-- Summary Section -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Summary
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="mb-3">Total Income: <span class="text-success fw-bold" id="total-income">$0.00</span></h5>
+                            <h5 class="mb-3">Total Expenses: <span class="text-danger fw-bold" id="total-expenses">$0.00</span></h5>
+                            <h5>Net Balance: <span class="text-info fw-bold" id="net-balance">$0.00</span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Recent Transactions
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button id="get-all-transactions-btn" class="btn btn-primary w-100">All Transactions</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Date Filter Inputs -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="show-start-date" class="form-label">Start Date:</label>
+                                    <input type="date" id="show-start-date" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="show-end-date" class="form-label">End Date:</label>
+                                    <input type="date" id="show-end-date" class="form-control">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button id="filter-btn" class="btn btn-primary w-100">Filter</button>
+                                </div>
+                            </div>
+
+                            <table class="table table-hover" id="results-table">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-body">
+                                <!-- Dynamically populated rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Sample script to manage adding transactions dynamically
-    document.getElementById('finance-form').addEventListener('submit', function(event) {
-        event.preventDefault();
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("transaction-entry-form");
 
-        const type = document.getElementById('entry-type').value;
-        const date = document.getElementById('entry-date').value;
-        const amount = parseFloat(document.getElementById('entry-amount').value).toFixed(2);
-        const description = document.getElementById('entry-description').value || '-';
+                // Handle Submit (POST)
+                document.getElementById("submit-btn").addEventListener("click", function (e) {
+                    e.preventDefault();
 
-        const receiptInput = document.getElementById('entry-receipt');
-        const receipt = receiptInput.files.length > 0 ? receiptInput.files[0].name : '-';
+                    const data = {
+                        transactionType: document.getElementById("entry-type").value,
+                        date: document.getElementById("entry-date").value,
+                        amount: document.getElementById("entry-amount").value,
+                        account: document.getElementById("entry-name").value,
+                        category: document.getElementById("entry-category").value,
+                        details: document.getElementById("entry-description").value,
+                    };
+                    console.log("Payload I'm sending to backend:", data);
+                    fetch("/api/v1/transaction/saveTransaction", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                // Handle error response
+                                return response.json().then(err => { throw err });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert("Saved successfully!");
+                            form.reset();
+                        })
+                        .catch(error => {
+                            console.error("Error saving data:", error);  // This will show proper error object
+                            alert(error.error || "Failed to save data.");  // Show backend message if exists
+                        });
+                });
 
-        const transactionsBody = document.getElementById('transactions-body');
+                // Handle Filter
+                document.getElementById("filter-btn").addEventListener("click", function (e) {
+                    e.preventDefault();
 
-        const row = `<tr>
-                <td>${date}</td>
-                <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
-                <td>${description}</td>
-                <td>${type === 'income' ? '+' : '-'}$${amount}</td>
-                <td>${receipt}</td>
-            </tr>`;
+                    const params = new URLSearchParams({
+                        type: document.getElementById("show-start-date").value,
+                        date: document.getElementById("show-end-date").value,
+                    });
 
-        transactionsBody.innerHTML += row;
+                    fetch("/api/v1/transaction/getTransactionsByDateRange?" + params.toString())
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.querySelector("#results-table tbody");
+                            tableBody.innerHTML = ""; // clear previous results
 
-        // Update totals (mock implementation)
-        const totalIncomeElement = document.getElementById('total-income');
-        const totalExpensesElement = document.getElementById('total-expenses');
-        const netBalanceElement = document.getElementById('net-balance');
+                            if (data.length === 0) {
+                                tableBody.innerHTML = `<tr><td colspan="5" class="text-center">No records found</td></tr>`;
+                                return;
+                            }
 
-        let totalIncome = parseFloat(totalIncomeElement.textContent.slice(1));
-        let totalExpenses = parseFloat(totalExpensesElement.textContent.slice(1));
+                            data.forEach(item => {
+                                const row = `
+                                    <tr>
+                                        <td>${item.type}</td>
+                                        <td>${item.date}</td>
+                                        <td>${item.amount}</td>
+                                        <td>${item.name}</td>
+                                        <td>${item.category}</td>
+                                    </tr>
+                                `;
+                                tableBody.insertAdjacentHTML("beforeend", row);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Error fetching data:", error);
+                            alert("Failed to fetch data.");
+                        });
+                });
 
-        if (type === 'income') {
-            totalIncome += parseFloat(amount);
-        } else {
-            totalExpenses += parseFloat(amount);
-        }
+                // Handle Get all transactions
+                document.getElementById("get-all-transactions-btn").addEventListener("click", function (e) {
+                    e.preventDefault();
 
-        totalIncomeElement.textContent = `$${totalIncome.toFixed(2)}`;
-        totalExpensesElement.textContent = `$${totalExpenses.toFixed(2)}`;
-        netBalanceElement.textContent = `$${(totalIncome - totalExpenses).toFixed(2)}`;
+                    fetch("/api/v1/transaction/getAllTransactions")
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);  // Log the data to inspect its structure
+                            const tableBody = document.querySelector("#results-table tbody");
+                            tableBody.innerHTML = ""; // clear previous results
 
-        // Reset the form
-        this.reset();
-    });
-</script>
-</body>
+                            if (data.length === 0) {
+                                tableBody.innerHTML = `<tr><td colspan="5" class="text-center">No records found</td></tr>`;
+                                return;
+                            }
+
+                            data.forEach(item => {
+                                const row = `
+                                    <tr>
+                                        <td>${item.type}</td>
+                                        <td>${item.date}</td>
+                                        <td>${item.amount}</td>
+                                        <td>${item.name}</td>
+                                        <td>${item.category}</td>
+                                    </tr>
+                                `;
+                                tableBody.insertAdjacentHTML("beforeend", row);
+                            });
+                        })
+                        .catch(error => {
+                            console.error("Error fetching data:", error);
+                            alert("Failed to fetch data.");
+                        });
+                });
+
+            });
+        </script>
+    </body>
 </html>
