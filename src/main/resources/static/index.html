@@ -76,8 +76,9 @@
                                     <label for="entry-type" class="form-label">Type</label>
                                     <select class="form-select" id="entry-type" required>
                                         <option value="" disabled selected>Select type</option>
-                                        <option value="income">Income</option>
-                                        <option value="expense">Expense</option>
+                                        <option value="INCOME">Income</option>
+                                        <option value="EXPENSE">Expense</option>
+                                        <option value="CARDPAYMENT">Card Payment</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -89,26 +90,50 @@
                                     <input type="number" class="form-control" id="entry-amount" placeholder="Enter amount" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="entry-name" class="form-label">Name</label>
-                                    <textarea class="form-control" id="entry-name" rows="1" placeholder="Name" required></textarea>
+                                    <label for="entry-account" class="form-label">Account</label>
+                                    <select class="form-select" id="entry-account" required>
+                                        <option value="" disabled selected>Select category</option>
+                                        <option value="ASANKA">Asanka's personal</option>
+                                        <option value="DIVYA">Divya's Personal</option>
+                                        <option value="CIBC">CIBC - Shared</option>
+                                        <option value="AMEX">AMEX - Shared</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-entity" class="form-label">Account</label>
+                                    <select class="form-select" id="entry-entity" required>
+                                        <option value="" disabled selected>Select category</option>
+                                        <option value="Cosco">Cosco</option>
+                                        <option value="No Frills">No Frills</option>
+                                        <option value="Freshco">Freshco</option>
+                                        <option value="Indian">Indian</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="entry-category" class="form-label">Category</label>
                                     <select class="form-select" id="entry-category" required>
                                         <option value="" disabled selected>Select category</option>
-                                        <option value="Utility Bill">Utility Bill</option>
-                                        <option value="Groceries">Groceries</option>
-                                        <option value="Transportation">Transportation</option>
-                                        <option value="Healthcare">Healthcare</option>
-                                        <option value="Entertainment">Entertainment</option>
-                                        <option value="Mortgage">Mortgage</option>
-                                        <option value="Property tax">Property tax</option>
-                                        <option value="Insurance">Insurance</option>
-                                        <option value="Car repair">Car repair</option>
-                                        <option value="Home maintenance">Home maintenance</option>
-                                        <option value="Salary">Salary</option>
-                                        <option value="Rental Income">Rental Income</option>
-                                        <option value="Government Grants">Government Grants</option>
+                                        <option value="1">Utility Bill</option>
+                                        <option value="2">Groceries</option>
+                                        <option value="3">Transportation</option>
+                                        <option value="4">Healthcare</option>
+                                        <option value="5">Entertainment</option>
+                                        <option value="6">Mortgage</option>
+                                        <option value="7">Property tax</option>
+                                        <option value="8">Insurance</option>
+                                        <option value="9">Car repair</option>
+                                        <option value="10">Home maintenance</option>
+                                        <option value="11">Salary</option>
+                                        <option value="12">Rental Income</option>
+                                        <option value="13">Government Grants</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="entry-person" class="form-label">Person</label>
+                                    <select class="form-select" id="entry-person" required>
+                                        <option value="" disabled selected>Select Person</option>
+                                        <option value="1">Asanka</option>
+                                        <option value="2">Divya</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -174,8 +199,8 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Type</th>
-                                        <th>Description</th>
                                         <th>Amount</th>
+                                        <th>Account</th>
                                         <th>Category</th>
                                     </tr>
                                 </thead>
@@ -202,11 +227,13 @@
                         transactionType: document.getElementById("entry-type").value,
                         date: document.getElementById("entry-date").value,
                         amount: document.getElementById("entry-amount").value,
-                        account: document.getElementById("entry-name").value,
+                        account: document.getElementById("entry-account").value,
+                        entity: document.getElementById("entry-entity").value,
                         category: document.getElementById("entry-category").value,
                         details: document.getElementById("entry-description").value,
+                        person: document.getElementById("entry-person").value,
                     };
-                    console.log("Payload I'm sending to backend:", data);
+                    console.log("Payload JSON string:", JSON.stringify(data, null, 2));
                     fetch("/api/v1/transaction/saveTransaction", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -234,9 +261,11 @@
                     e.preventDefault();
 
                     const params = new URLSearchParams({
-                        type: document.getElementById("show-start-date").value,
-                        date: document.getElementById("show-end-date").value,
+                        start: document.getElementById("show-start-date").value,
+                        end: document.getElementById("show-end-date").value,
                     });
+
+                    console.log("Query Params I'm sending:", params.toString());
 
                     fetch("/api/v1/transaction/getTransactionsByDateRange?" + params.toString())
                         .then(response => response.json())
@@ -248,14 +277,15 @@
                                 tableBody.innerHTML = `<tr><td colspan="5" class="text-center">No records found</td></tr>`;
                                 return;
                             }
-
+                            console.log("Data from backend:", data);
+                            console.log("Data from backend:", JSON.stringify(data, null, 2));
                             data.forEach(item => {
                                 const row = `
                                     <tr>
-                                        <td>${item.type}</td>
                                         <td>${item.date}</td>
+                                        <td>${item.transactionType}</td>
                                         <td>${item.amount}</td>
-                                        <td>${item.name}</td>
+                                        <td>${item.account}</td>
                                         <td>${item.category}</td>
                                     </tr>
                                 `;

@@ -1,14 +1,17 @@
 package ca.homefinance.service;
 
+import ca.homefinance.dto.TransactionDto;
 import ca.homefinance.entity.Category;
-import ca.homefinance.entity.Transaction;
+
 import ca.homefinance.entity.Person;
+import ca.homefinance.entity.Transaction;
 import ca.homefinance.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +30,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getTransactionsByDateRange(Date startDate, Date endDate) {
+    public List<Transaction> getTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
         return transactionRepository.findByDateBetween(startDate, endDate);
     }
 
