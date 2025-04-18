@@ -66,7 +66,7 @@ public class TransactionService {
 //        return transactionRepository.findByPerson(personId);
 //    }
 //
-//    public List<Transaction> searchTransactions(BigDecimal amount, Date startDate, Date endDate, String entity, String details, Category categoryId, Transaction.AccountType account, Transaction.TransactionType transactionType, Person person) {
-//        return transactionRepository.searchTransactions(amount, startDate, endDate, entity, details, categoryId, account, transactionType, person);
-//    }
+    public List<Transaction> searchTransactions(List<BigDecimal> amounts, LocalDate  startDate, LocalDate endDate, List<String> entities, String details, List<Category> categories, List<Transaction.AccountType> accounts, List<Transaction.TransactionType> transactionTypes, List<Person> persons) {
+        return transactionRepository.searchTransactions(amounts, startDate, endDate, entities, details, categories, accounts, transactionTypes, persons);
+    }
 }
