@@ -34,14 +34,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 //    List<Transaction> findByPerson(Person personId);
 //
     @Query("SELECT t FROM Transaction t WHERE " +
-            "(:amounts IS NULL OR t.amount IN :amounts) AND " +
+            "(t.amount IN :amounts) AND " +
             "(:startDate IS NULL OR :endDate IS NULL OR t.date BETWEEN :startDate AND :endDate) AND " +
-            "(:entities IS NULL OR LOWER(t.entity) IN :entities) AND " +
+            "(LOWER(t.entity) IN :entities) AND " +
             "(:details IS NULL OR LOWER(t.details) LIKE LOWER(CONCAT('%', :details, '%'))) AND " +
-            "(:categories IS NULL OR t.category IN :categories) AND " +
-            "(:accounts IS NULL OR t.account IN :accounts) AND " +
-            "(:transactionTypes IS NULL OR t.transactionType IN :transactionTypes) AND " +
-            "(:people IS NULL OR t.person IN :people)")
+            "(t.category IN :categories) AND " +
+            "(t.account IN :accounts) AND " +
+            "(t.transactionType IN :transactionTypes) AND " +
+            "(t.person IN :people)")
     List<Transaction> searchTransactions(
             @Param("amounts") List<BigDecimal> amounts,
             @Param("startDate") LocalDate startDate,
@@ -52,5 +52,16 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             @Param("accounts") List<Transaction.AccountType> accounts,
             @Param("transactionTypes") List<Transaction.TransactionType> transactionTypes,
             @Param("people") List<Person> people
+    );
+
+    @Query("SELECT t FROM Transaction t WHERE " +
+            "(:startDate IS NULL OR :endDate IS NULL OR t.date BETWEEN :startDate AND :endDate) AND " +
+            "(t.account IN :accounts) AND " +
+            "(t.transactionType IN :transactionTypes)")
+    List<Transaction> searchTransactionByDateRangeAccountTypeTransactionType(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("accounts") List<Transaction.AccountType> accounts,
+            @Param("transactionTypes") List<Transaction.TransactionType> transactionTypes
     );
 }

@@ -85,26 +85,18 @@ public class TransactionController {
             MonthlyBalanceResponseDto monthlyBalanceResponseDto = new MonthlyBalanceResponseDto();
 
             List<Transaction> expensesPaidFromPersonalAccounts =
-                    transactionService.searchTransactions(
-                            Collections.emptyList(),
+                    transactionService.searchTransactionByDateRangeAccountTypeTransactionType(
                             startLocalDate,
                             endLocalDate,
-                            Collections.emptyList(),
-                            null,
-                            Collections.emptyList(),
                             Arrays.asList(Transaction.AccountType.ASANKA, Transaction.AccountType.DIVYA),
-                            Arrays.asList(Transaction.TransactionType.EXPENSE), Collections.emptyList());
+                            Arrays.asList(Transaction.TransactionType.EXPENSE));
 
             List<Transaction> cardPayments =
-                    transactionService.searchTransactions(
-                            Collections.emptyList(),
+                    transactionService.searchTransactionByDateRangeAccountTypeTransactionType(
                             startLocalDate,
                             endLocalDate,
-                            Collections.emptyList(),
-                            null,
-                            Collections.emptyList(),
                             Arrays.asList(Transaction.AccountType.CIBC, Transaction.AccountType.AMEX),
-                            Arrays.asList(Transaction.TransactionType.CARDPAYMENT), Collections.emptyList());
+                            Arrays.asList(Transaction.TransactionType.CARDPAYMENT));
 
             for (Transaction txn : expensesPaidFromPersonalAccounts) {
                 if (txn.getAccount() == Transaction.AccountType.ASANKA) {
@@ -125,7 +117,7 @@ public class TransactionController {
             BigDecimal totalAsankaPaid = totalAsankaExpenses.add(totalCardPaymentsAsanka);
             BigDecimal totalDivyaPaid = totalDivyaExpenses.add(totalCardPaymentsDivya);
 
-            BigDecimal difference = totalAsankaPaid.subtract(totalDivyaPaid);
+            BigDecimal difference = totalDivyaPaid.subtract(totalAsankaPaid);
             int compare = difference.compareTo(BigDecimal.ZERO);
 
             monthlyBalanceResponseDto.setBalanceAmount(difference.toString());

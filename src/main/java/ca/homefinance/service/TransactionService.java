@@ -69,4 +69,9 @@ public class TransactionService {
     public List<Transaction> searchTransactions(List<BigDecimal> amounts, LocalDate  startDate, LocalDate endDate, List<String> entities, String details, List<Category> categories, List<Transaction.AccountType> accounts, List<Transaction.TransactionType> transactionTypes, List<Person> persons) {
         return transactionRepository.searchTransactions(amounts, startDate, endDate, entities, details, categories, accounts, transactionTypes, persons);
     }
+
+    public List<Transaction> searchTransactionByDateRangeAccountTypeTransactionType(LocalDate  startDate, LocalDate endDate, List<Transaction.AccountType> accounts, List<Transaction.TransactionType> transactionTypes) {
+        return transactionRepository.searchTransactionByDateRangeAccountTypeTransactionType(startDate, endDate, accounts, transactionTypes);
+    }
+
 }
