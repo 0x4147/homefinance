@@ -2,6 +2,7 @@ package ca.homefinance.controller;
 
 import ca.homefinance.dto.MonthlyBalanceResponseDto;
 import ca.homefinance.dto.TransactionDto;
+import ca.homefinance.entity.Category;
 import ca.homefinance.entity.Transaction;
 import ca.homefinance.repository.CategoryRepository;
 import ca.homefinance.repository.PersonRepository;

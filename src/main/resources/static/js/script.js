@@ -1,3 +1,7 @@
+    let currentChartType = 'category';
+    let chartInstance = null;
+    let chartData = {};
+
     function showPage(page) {
         document.getElementById('dashboardContainer').style.display = 'none';
         document.getElementById('transactionContainer').style.display = 'none';
@@ -125,64 +129,102 @@
 
     });
 
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
-    let currentChart;
+    function showChart(tab, type) {
+        currentChartType = type;
+        document.querySelectorAll('#chartTabs .nav-link').forEach(btn => btn.classList.remove('active'));
+        tab.classList.add('active');
 
-    const chartsData = {
-        category: {
-            title: 'Spending by Category',
-            type: 'bar',
-            labels: ['Food', 'Travel', 'Shopping', 'Bills', 'Entertainment'],
-            data: [500, 200, 300, 400, 150],
-        },
-        merchant: {
-            title: 'Top Merchants',
-            type: 'pie',
-            labels: ['Amazon', 'Walmart', 'Costco', 'Uber', 'Starbucks'],
-            data: [800, 600, 500, 300, 200],
-        },
-        month: {
-            title: 'Spending by Month (YTD)',
-            type: 'bar',
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-            data: [1200, 1100, 1500, 1300, 1250, 1600, 1400, 1700, 1500],
+        document.getElementById('chartTitle').innerText = {
+            category: 'Spending by Category',
+            merchant: 'Top Merchants',
+            month: 'Spending by Month'
+        }[type];
+
+        // Toggle input sets
+        document.getElementById('dateRangeInputs').style.display = (type === 'month') ? 'none' : 'flex';
+        document.getElementById('monthYearRangeInputs').style.display = (type === 'month') ? 'flex' : 'none';
+
+        document.getElementById('transactionDetails').style.display = 'none';
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = null;
+    }
+
+    async function loadChartData() {
+        const urlMap = {
+            category: '/api/v1/transaction/getExpensesByCategory',
+            merchant: '/api/v1/transaction/getExpensesByEntity',
+            month: '/api/v1/transaction/getExpensesByMonth'
+        };
+
+        let params = {};
+        if (currentChartType === 'month') {
+            params = {
+                start: document.getElementById('startMonth').value,
+                end: document.getElementById('endMonth').value
+            };
+        } else {
+            params = {
+                start: document.getElementById('startDate').value,
+                end: document.getElementById('endDate').value
+            };
         }
-    };
 
-    function showChart(type) {
-        const chartInfo = chartsData[type];
-        document.getElementById('chartTitle').innerText = chartInfo.title;
+        const { data } = await axios.get(urlMap[currentChartType], { params });
+        chartData = data;
 
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        event.target.classList.add('active');
+        renderChart(data);
+    }
 
-        if (currentChart) {
-            currentChart.destroy();
-        }
+    function renderChart(data) {
+        const labels = Object.keys(data.totals);
+        const values = Object.values(data.totals);
 
-        currentChart = new Chart(ctx, {
-            type: chartInfo.type,
+        const config = {
+            type: currentChartType === 'merchant' ? 'pie' : 'bar',
             data: {
-                labels: chartInfo.labels,
+                labels,
                 datasets: [{
-                    label: chartInfo.title,
-                    data: chartInfo.data,
-                    backgroundColor: [
-                        '#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#fd7e14',
-                        '#20c997', '#198754', '#0dcaf0', '#ffc107'
-                    ],
+                    label: 'Amount',
+                    data: values,
+                    backgroundColor: ['#0d6efd', '#6610f2', '#6f42c1', '#198754', '#dc3545', '#ffc107']
                 }]
             },
             options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: chartInfo.type === 'pie'
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const key = labels[index];
+                        renderTransactions(key);
                     }
                 }
             }
-        });
+        };
+
+        const ctx = document.getElementById('chartCanvas').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, config);
     }
+
+    function renderTransactions(key) {
+        const tbody = document.getElementById('transactionTableBody');
+        tbody.innerHTML = '';
+
+        const rows = chartData.details[key] || [];
+        for (const tx of rows) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${tx.date}</td>
+                <td>${tx.merchant}</td>
+                <td>$${parseFloat(tx.amount).toFixed(2)}</td>
+                <td>${tx.category}</td>
+                <td>${tx.description || ''}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('transactionDetails').style.display = 'block';
+    }
+
 
     function fetchBalance() {
         const month = document.getElementById("monthSelect").value;

@@ -54,13 +54,7 @@
                             <a class="nav-link active text-primary fw-bold" href="#" onclick="showPage('transactionContainer')">Transactions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#" onclick="showPage('dashboardContainer'); showChart('category')">Spending By Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('dashboardContainer'); showChart('merchant')">Top Merchants</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="showPage('dashboardContainer'); showChart('month')">Spending my month</a>
+                            <a class="nav-link active" href="#" onclick="showPage('dashboardContainer')">Dashboard</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#" onclick="showPage('paymentsContainer')">Payments</a>
@@ -70,11 +64,68 @@
             </div>
         </nav>
 
+        <div class="container-md" id="dashboardContainer" style="display: none;">
+            <ul class="nav nav-tabs mb-3" id="chartTabs">
+                <li class="nav-item">
+                    <button class="nav-link active" onclick="showChart(this, 'category')">Spending by Category</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" onclick="showChart(this, 'merchant')">Top Merchants</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" onclick="showChart(this, 'month')">Spending by Month</button>
+                </li>
+            </ul>
 
+            <div class="mb-3 row" id="dateRangeInputs" style="display: none;" >
+                <div class="col-md-4">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDate">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" onclick="loadChartData()">Submit date range</button>
+                </div>
+            </div>
 
-        <div class="container-md" id="dashboardContainer" style="display:none;">
-            <h2 class="text-center mb-4" id="chartTitle">Spending by Category</h2>
-            <canvas id="chartCanvas"></canvas>
+            <div class="mb-3 row" id="monthYearRangeInputs" style="display: none;">
+                <div class="col-md-4">
+                    <label class="form-label">Start Month</label>
+                    <input type="month" class="form-control" id="startMonth">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">End Month</label>
+                    <input type="month" class="form-control" id="endMonth">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" onclick="loadChartData()">Submit month</button>
+                </div>
+            </div>
+
+            <h4 id="chartTitle" class="mb-3 text-primary">Spending by Category</h4>
+
+            <canvas id="chartCanvas" height="100"></canvas>
+
+            <div id="transactionDetails" class="mt-4" style="display: none;">
+                <h5 class="text-primary">Transactions</h5>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Merchant</th>
+                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Account</th>
+                    </tr>
+                    </thead>
+                    <tbody id="transactionTableBody">
+                    <!-- Rows will be inserted dynamically -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="container-md" id="paymentsContainer" style="display:none;">
