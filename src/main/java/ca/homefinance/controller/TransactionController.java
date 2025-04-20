@@ -2,10 +2,12 @@ package ca.homefinance.controller;
 
 import ca.homefinance.dto.MonthlyBalanceResponseDto;
 import ca.homefinance.dto.TransactionDto;
+import ca.homefinance.dto.TransactionSummary;
 import ca.homefinance.entity.Category;
 import ca.homefinance.entity.Transaction;
 import ca.homefinance.repository.CategoryRepository;
 import ca.homefinance.repository.PersonRepository;
+import ca.homefinance.repository.TransactionRepository;
 import ca.homefinance.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,6 +35,8 @@ public class TransactionController {
 
     @Autowired
     private final PersonRepository personRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @GetMapping("/getAllTransactions")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
@@ -77,8 +79,7 @@ public class TransactionController {
         try {
             LocalDate startLocalDate = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), 1);
             LocalDate endLocalDate = startLocalDate.withDayOfMonth(startLocalDate.lengthOfMonth());
-            Date startDate = Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date endDate = Date.from(endLocalDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+
             BigDecimal totalAsankaExpenses = BigDecimal.ZERO;
             BigDecimal totalDivyaExpenses = BigDecimal.ZERO;
             BigDecimal totalCardPaymentsAsanka = BigDecimal.ZERO;
@@ -140,5 +141,60 @@ public class TransactionController {
         } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/getExpensesByCategory")
+    public ResponseEntity<TransactionSummary> getExpensesByCategory(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        Map<String, BigDecimal> totals = new HashMap<>();
+        Map<String, List<Transaction>> details = new HashMap<>();
+
+        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
+
+        for (Transaction tx : transactions) {
+            String category = tx.getCategory().getName();
+            BigDecimal amount = tx.getAmount();
+            totals.put(category, totals.getOrDefault(category, BigDecimal.ZERO).add(amount));
+            details.computeIfAbsent(category, k -> new ArrayList<>()).add(tx);
+        }
+
+        return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);
+    }
+
+    @GetMapping("/getExpensesByEntity")
+    public ResponseEntity<TransactionSummary> getExpensesByEntity(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        Map<String, BigDecimal> totals = new HashMap<>();
+        Map<String, List<Transaction>> details = new HashMap<>();
+
+        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
+
+        for (Transaction tx : transactions) {
+            String entity = tx.getEntity();
+            BigDecimal amount = tx.getAmount();
+            totals.put(entity, totals.getOrDefault(entity, BigDecimal.ZERO).add(amount));
+            details.computeIfAbsent(entity, k -> new ArrayList<>()).add(tx);
+        }
+
+        return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);
+    }
+
+    @GetMapping("/getExpensesByMonth")
+    public ResponseEntity<TransactionSummary> getExpensesByMonth(@RequestParam YearMonth startMonth, @RequestParam YearMonth endMonth) {
+        Map<String, BigDecimal> totals = new HashMap<>();
+        Map<String, List<Transaction>> details = new HashMap<>();
+        LocalDate startDate = startMonth.atDay(1);
+        LocalDate endDate = endMonth.atEndOfMonth();
+
+        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
+
+        for (Transaction tx : transactions) {
+            YearMonth ym = YearMonth.from(tx.getDate());
+            String monthKey = ym.toString(); // e.g. "2025-04"
+
+            BigDecimal amount = tx.getAmount();
+            totals.put(monthKey, totals.getOrDefault(monthKey, BigDecimal.ZERO).add(amount));
+            details.computeIfAbsent(monthKey, k -> new ArrayList<>()).add(tx);
+        }
+
+        return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);
     }
 }

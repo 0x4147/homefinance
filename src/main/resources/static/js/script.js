@@ -159,13 +159,13 @@
         let params = {};
         if (currentChartType === 'month') {
             params = {
-                start: document.getElementById('startMonth').value,
-                end: document.getElementById('endMonth').value
+                startMonth: document.getElementById('startMonth').value,
+                endMonth: document.getElementById('endMonth').value
             };
         } else {
             params = {
-                start: document.getElementById('startDate').value,
-                end: document.getElementById('endDate').value
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value
             };
         }
 
@@ -214,10 +214,10 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${tx.date}</td>
-                <td>${tx.merchant}</td>
+                <td>${tx.entity}</td>
                 <td>$${parseFloat(tx.amount).toFixed(2)}</td>
-                <td>${tx.category}</td>
-                <td>${tx.description || ''}</td>
+                <td>${tx.category.name}</td>
+                <td>${tx.account || ''}</td>
             `;
             tbody.appendChild(tr);
         }
