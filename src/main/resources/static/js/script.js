@@ -6,6 +6,7 @@
         document.getElementById('dashboardContainer').style.display = 'none';
         document.getElementById('transactionContainer').style.display = 'none';
         document.getElementById('paymentsContainer').style.display = 'none';
+        document.getElementById('batchUploadContainer').style.display = 'none';
 
         document.getElementById(page).style.display = 'block';
     }
@@ -288,3 +289,37 @@
                 console.error(err);
             });
     }
+
+    document.getElementById('uploadButton').addEventListener('click', function () {
+        const fileInput = document.getElementById('csvFile');
+        const file = fileInput.files[0];
+
+        const statusDiv = document.getElementById('statusMessage');
+        statusDiv.innerHTML = '';
+
+        if (!file) {
+            statusDiv.innerHTML = '<div class="alert alert-warning">Please select a CSV file.</div>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/api/v1/transactionBatchUpload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Upload failed');
+                }
+            })
+            .then(result => {
+                statusDiv.innerHTML = `<div class="alert alert-success">Upload successful: ${result}</div>`;
+            })
+            .catch(error => {
+                statusDiv.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            });
+    });

@@ -21,36 +21,34 @@ public class BatchConfig {
     private CsvTransactionReader csvReader;
 
     @Autowired
-    private JsonTransactionReader jsonReader;
-
-    @Autowired
     private TransactionWriter writer;
 
     @Bean
     public Job transactionJob(JobRepository jobRepository,
-                              PlatformTransactionManager transactionManager) {
+                              PlatformTransactionManager transactionManager,
+                              ItemReader<Transaction> csvFileReader) {
         return new JobBuilder("transactionJob", jobRepository)
-                .start(importTransactionsStep(jobRepository, transactionManager))
+                .start(importTransactionsStep(jobRepository, transactionManager, csvFileReader))
                 .build();
     }
 
     @Bean
     public Step importTransactionsStep(JobRepository jobRepository,
-                                       PlatformTransactionManager transactionManager) {
+                                       PlatformTransactionManager transactionManager,
+                                       ItemReader<Transaction> csvFileReader) {
         return new StepBuilder("importTransactions", jobRepository)
                 .<Transaction, Transaction>chunk(10, transactionManager)
-                .reader(multiFormatReader(null))
+                .reader(csvFileReader)
                 .writer(writer)
                 .build();
     }
 
     @StepScope
     @Bean
-    public ItemReader<Transaction> multiFormatReader(@Value("#{jobParameters['filePath']}") String filePath) {
-        if (filePath != null && filePath.endsWith(".csv")) {
-            return csvReader.reader(filePath);
-        } else {
-            return jsonReader.reader(filePath);
+    public ItemReader<Transaction> csvFileReader(@Value("#{jobParameters['filePath']}") String filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("The filePath job parameter is required.");
         }
+        return csvReader.reader(filePath);
     }
 }
