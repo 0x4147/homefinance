@@ -4,6 +4,7 @@ import ca.homefinance.entity.Category;
 import ca.homefinance.repository.CategoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,18 @@ import java.util.Map;
 @Component
 public class TransactionCategorizer {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private static final String MAPPINGS_FILE = "category_mappings.json";
     private Map<String, String> entityToCategory = new HashMap<>();
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public TransactionCategorizer() {
+    @Autowired
+    public TransactionCategorizer(CategoryRepository categoryRepository){
+        this.categoryRepository = categoryRepository;
+    }
+
+    @PostConstruct
+    public void init() {
         loadMappings();
     }
 
