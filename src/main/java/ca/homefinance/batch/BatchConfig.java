@@ -1,6 +1,7 @@
 package ca.homefinance.batch;
 
 import ca.homefinance.entity.Transaction;
+import ca.homefinance.mapper.AMEXTransactionFieldMapper;
 import ca.homefinance.mapper.CIBCTransactionFieldMapper;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -26,11 +27,15 @@ public class BatchConfig {
 
     private final TransactionWriter writer;
     private final CIBCTransactionFieldMapper cibcTransactionFieldMapper;
+    private final AMEXTransactionFieldMapper amexTransactionFieldMapper;
 
     @Autowired
-    public BatchConfig (TransactionWriter writer, CIBCTransactionFieldMapper cibcTransactionFieldMapper){
+    public BatchConfig (TransactionWriter writer,
+                        CIBCTransactionFieldMapper cibcTransactionFieldMapper,
+                        AMEXTransactionFieldMapper amexTransactionFieldMapper){
         this.writer = writer;
         this.cibcTransactionFieldMapper = cibcTransactionFieldMapper;
+        this.amexTransactionFieldMapper = amexTransactionFieldMapper;
     }
 
     @Bean
@@ -46,26 +51,37 @@ public class BatchConfig {
                                        PlatformTransactionManager transactionManager) {
         return new StepBuilder("importTransactions", jobRepository)
                 .<Transaction, Transaction>chunk(10, transactionManager)
-                .reader(csvFileReader(null)) // Correct usage: Let Spring inject the value
+                .reader(csvFileReader(null, null)) // Let Spring inject the value
                 .writer(writer)
                 .build();
     }
 
     @StepScope
     @Bean
-    public FlatFileItemReader<Transaction> csvFileReader(@Value("#{jobParameters['filePath']}") String filePath) {
+    public FlatFileItemReader<Transaction> csvFileReader(@Value("#{jobParameters['filePath']}") String filePath,
+                                                         @Value("#{jobParameters['sourceType']}") String sourceType) {
         FlatFileItemReader<Transaction> reader = new FlatFileItemReader<>();
-        reader.setResource(new FileSystemResource(filePath));  // Use filePath injected at runtime
-        reader.setLinesToSkip(0); // No header to skip
-        reader.setLineMapper(new DefaultLineMapper<>() {{
-            setLineTokenizer(new DelimitedLineTokenizer() {{
-                setDelimiter(",");  // Comma-separated
-                setQuoteCharacter('"'); // Handle quoted fields correctly
-                setStrict(false);  // Allow extra commas (like trailing commas)
-                setNames("date", "entity", "amount", "dummyColumn");  // Column names
-            }});
-            setFieldSetMapper(cibcTransactionFieldMapper);
-        }});
+        reader.setResource(new FileSystemResource(filePath));
+        reader.setLinesToSkip(0);
+
+        DefaultLineMapper<Transaction> lineMapper = new DefaultLineMapper<>();
+
+        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+        tokenizer.setDelimiter(",");
+        tokenizer.setQuoteCharacter('"');
+        tokenizer.setStrict(false);
+
+        if ("amex".equalsIgnoreCase(sourceType)) {
+            tokenizer.setNames("date", "entity", "amount", "dummyColumn");
+            lineMapper.setFieldSetMapper(amexTransactionFieldMapper);
+        } else if ("cibc".equalsIgnoreCase(sourceType)) { // Default to cibc
+            tokenizer.setNames("date", "entity", "amount", "dummyColumn");
+            lineMapper.setFieldSetMapper(cibcTransactionFieldMapper);
+        }
+
+        lineMapper.setLineTokenizer(tokenizer);
+        reader.setLineMapper(lineMapper);
+
         return reader;
-    }
+        }
 }

@@ -291,7 +291,10 @@
     }
 
     document.getElementById('uploadButton').addEventListener('click', function () {
+
         const fileInput = document.getElementById('csvFile');
+        const sourceType = document.getElementById('sourceTypeSelect').value;
+
         const file = fileInput.files[0];
 
         const statusDiv = document.getElementById('statusMessage');
@@ -304,6 +307,7 @@
 
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('sourceType', sourceType);
 
         fetch('/api/v1/transactionBatchUpload', {
             method: 'POST',
@@ -322,4 +326,13 @@
             .catch(error => {
                 statusDiv.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
             });
+    });
+
+    document.getElementById('sourceTypeSelect').addEventListener('change', function() {
+        const fileInput = document.getElementById('csvFile');
+        if (this.value) {
+            fileInput.disabled = false;
+        } else {
+            fileInput.disabled = true;
+        }
     });

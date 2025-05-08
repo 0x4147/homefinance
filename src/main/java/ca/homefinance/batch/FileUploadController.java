@@ -13,6 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+
+import static ca.homefinance.constant.General.ALLOWED_SOURCES;
+import static sun.java2d.loops.CompositeType.General;
 
 @RestController
 @RequestMapping("/api/v1/transactionBatchUpload")
@@ -25,14 +29,21 @@ public class FileUploadController {
     private Job transactionJob;
 
     @PostMapping
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
+                                             @RequestParam("sourceType") String sourceType) throws Exception {
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename()).toLowerCase();
 
         Path tempFile = Files.createTempFile("upload-", "." + extension);
         file.transferTo(tempFile);
 
+        if (!ALLOWED_SOURCES.contains(sourceType.toLowerCase())) {
+            return ResponseEntity.badRequest()
+                    .body("Invalid sourceType. Allowed values: " + ALLOWED_SOURCES);
+        }
+
         JobParameters params = new JobParametersBuilder()
                 .addString("filePath", tempFile.toAbsolutePath().toString())
+                .addString("sourceType", sourceType.toLowerCase())
                 .addLong("timestamp", System.currentTimeMillis())
                 .toJobParameters();
 
