@@ -1,6 +1,7 @@
 package ca.homefinance.mapper;
 
 import ca.homefinance.entity.Transaction;
+import ca.homefinance.helper.GeneralHelper;
 import ca.homefinance.helper.TransactionCategorizer;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
@@ -25,9 +26,16 @@ public class CIBCTransactionFieldMapper implements FieldSetMapper<Transaction> {
     public Transaction mapFieldSet(FieldSet fieldSet) {
         Transaction transaction = new Transaction();
 
-        transaction.setDate(LocalDate.parse(fieldSet.readString(0), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        transaction.setEntity(fieldSet.readString(1));
-        transaction.setAmount(new BigDecimal(fieldSet.readString(2)));
+        transaction.setDate(LocalDate.parse(fieldSet.readString(0), DateTimeFormatter.ofPattern("M/d/yyyy")));
+
+        String entity = fieldSet.readString(1);
+        transaction.setEntity(entity);
+
+        BigDecimal amount = new BigDecimal(fieldSet.readString(2));
+        transaction.setAmount(amount);
+
+        transaction.setTransactionType(GeneralHelper.determineTransactionType(entity, amount));
+
         transaction.setAccount(Transaction.AccountType.CIBC);
         transaction.setTransactionType(Transaction.TransactionType.EXPENSE);
         transaction.setCategory(categorizer.getCategory(transaction.getEntity()));
@@ -35,4 +43,6 @@ public class CIBCTransactionFieldMapper implements FieldSetMapper<Transaction> {
 
         return transaction;
     }
+
+
 }

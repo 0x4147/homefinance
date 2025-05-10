@@ -69,13 +69,13 @@ public class BatchConfig {
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         tokenizer.setDelimiter(",");
         tokenizer.setQuoteCharacter('"');
-        tokenizer.setStrict(false);
+//        tokenizer.setStrict(false);
 
         if ("amex".equalsIgnoreCase(sourceType)) {
-            tokenizer.setNames("date", "entity", "amount", "dummyColumn");
+            tokenizer.setNames("date", "entity", "amount");
             lineMapper.setFieldSetMapper(amexTransactionFieldMapper);
-        } else if ("cibc".equalsIgnoreCase(sourceType)) { // Default to cibc
-            tokenizer.setNames("date", "entity", "amount", "dummyColumn");
+        } else if ("cibc".equalsIgnoreCase(sourceType)) {
+            tokenizer.setNames("date", "entity", "amount");
             lineMapper.setFieldSetMapper(cibcTransactionFieldMapper);
         }
 

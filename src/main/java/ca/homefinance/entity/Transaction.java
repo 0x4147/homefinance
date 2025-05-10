@@ -55,7 +55,7 @@ public class Transaction {
     }
 
     public enum TransactionType {
-        INCOME, EXPENSE, CARDPAYMENT
+        INCOME, EXPENSE, CARDPAYMENT, REFUND
     }
 
 }

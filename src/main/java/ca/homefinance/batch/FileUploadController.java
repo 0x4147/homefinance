@@ -13,10 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static ca.homefinance.constant.General.ALLOWED_SOURCES;
-import static sun.java2d.loops.CompositeType.General;
 
 @RestController
 @RequestMapping("/api/v1/transactionBatchUpload")

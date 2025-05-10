@@ -1,6 +1,7 @@
 package ca.homefinance.mapper;
 
 import ca.homefinance.entity.Transaction;
+import ca.homefinance.helper.GeneralHelper;
 import ca.homefinance.helper.TransactionCategorizer;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Component
 public class AMEXTransactionFieldMapper implements FieldSetMapper<Transaction> {
@@ -24,19 +26,20 @@ public class AMEXTransactionFieldMapper implements FieldSetMapper<Transaction> {
     public Transaction mapFieldSet(FieldSet fieldSet) {
         Transaction transaction = new Transaction();
 
-        transaction.setDate(fieldSet.readString("date"));
-        transaction.setEntity(fieldSet.readString("entity"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM. yyyy", Locale.ENGLISH);
+        transaction.setDate(LocalDate.parse(fieldSet.readString(0), formatter));
 
-        // Clean the amount field (remove $ and commas)
-        String rawAmount = fieldSet.readString("amount");
-        String cleanedAmount = rawAmount.replace("$", "").replace(",", "").trim();
-        transaction.setAmount(new BigDecimal(cleanedAmount));
+        String entity = fieldSet.readString(1);
+        transaction.setEntity(entity);
 
-        transaction.setDate(LocalDate.parse(fieldSet.readString(0), DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        transaction.setEntity(fieldSet.readString(1));
-        transaction.setAmount(new BigDecimal(fieldSet.readString(2)));
-        transaction.setAccount(Transaction.AccountType.CIBC);
-        transaction.setTransactionType(Transaction.TransactionType.EXPENSE);
+        String rawAmount = fieldSet.readString(2);
+        String cleanedAmount = rawAmount.replace("$", "").trim();
+        BigDecimal amount = new BigDecimal(cleanedAmount);
+        transaction.setAmount(amount);
+
+        transaction.setTransactionType(GeneralHelper.determineTransactionType(entity, amount));
+
+        transaction.setAccount(Transaction.AccountType.AMEX);
         transaction.setCategory(categorizer.getCategory(transaction.getEntity()));
         transaction.setPerson(null);
 
