@@ -10,6 +10,8 @@ import ca.homefinance.repository.PersonRepository;
 import ca.homefinance.repository.TransactionRepository;
 import ca.homefinance.service.TransactionService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,8 @@ public class TransactionController {
     private final PersonRepository personRepository;
     @Autowired
     private TransactionRepository transactionRepository;
+
+    private static final Logger log = LoggerFactory.getLogger(TransactionController.class);
 
     @GetMapping("/getAllTransactions")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
@@ -148,14 +152,20 @@ public class TransactionController {
         Map<String, BigDecimal> totals = new HashMap<>();
         Map<String, List<Transaction>> details = new HashMap<>();
 
-        List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
+        try {
+            List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
-        for (Transaction tx : transactions) {
-            String category = tx.getCategory().getName();
-            BigDecimal amount = tx.getAmount();
-            totals.put(category, totals.getOrDefault(category, BigDecimal.ZERO).add(amount));
-            details.computeIfAbsent(category, k -> new ArrayList<>()).add(tx);
+            for (Transaction tx : transactions) {
+                String category = tx.getCategory() == null ? "Unknown" : tx.getCategory().getName();
+                BigDecimal amount = tx.getAmount();
+                totals.put(category, totals.getOrDefault(category, BigDecimal.ZERO).add(amount));
+                details.computeIfAbsent(category, k -> new ArrayList<>()).add(tx);
+            }
+        } catch (Exception e){
+            log.error("error preparing categories", e);
+            throw new RuntimeException(e);
         }
+
 
         return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);
     }
