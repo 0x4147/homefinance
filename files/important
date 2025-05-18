@@ -1,0 +1,12 @@
+MySQL workbench
+
+Connection name: homefinancedb
+Username: admin
+Password: password
+
+***************************************
+
+MYSQL_ROOT_PASSWORD: rootpassword
+MYSQL_DATABASE: homefinancedb
+MYSQL_USER: admin
+MYSQL_PASSWORD: password

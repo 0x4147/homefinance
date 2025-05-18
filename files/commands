@@ -1,5 +1,12 @@
 ########### Most Used ###########
 
+docker compose up --build
+
+docker compose down
+    To stop and clean everything
+
+
+
 docker kill homefinance
 docker image rm homefinance:1.0
 
@@ -33,3 +40,14 @@ kubectl get service
 kubectl get pod
 Kubectl get all | grep searchname
 kubectl get namespace
+
+############ Docker sql #######################
+
+docker run --name homefinance-mysql \
+  -e MYSQL_ROOT_PASSWORD=rootpassword \
+  -e MYSQL_DATABASE=homefinancedb \
+  -e MYSQL_USER=admin \
+  -e MYSQL_PASSWORD=password \
+  -p 3306:3306 \
+  -v C:/development/Personal/PersonalFinanceApp/app/mysql:/var/lib/mysql \
+  -d mysql:latest
