@@ -15,7 +15,7 @@
     "WAL-MART 3037 3037 HAMILTON",
     "DESI MANDI HAMILTON DES Hamilton"
   ],
-  "Eat Out": [
+  "Take Out": [
     "KARDAMOM KITCHEN",
     "ORIGINAL SHAWARMA",
     "SPRING SUSHI",
@@ -84,5 +84,9 @@
     "LCBO/RAO #0021 ANCASTER ANCASTER",
     "THE BEER STORE #4077 BU BURLINGTON",
     "LCBO"
+  ],
+  "Card payment": [
+    "PAYMENT",
+    "THANK YOU"
   ]
 }

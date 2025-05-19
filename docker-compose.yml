@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:latest
+    image: mysql:8.0
     container_name: homefinance-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
@@ -13,12 +13,18 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   homefinance:
     build: .
     container_name: homefinance
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8585:8585"
       - "5005:5005"
