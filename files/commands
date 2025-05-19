@@ -1,9 +1,13 @@
 ########### Most Used ###########
 
-docker compose up --build
-
 docker compose down
-    To stop and clean everything
+    Just removecontainers
+
+docker compose down -v
+    remove all data and volumes
+
+docker compose up --build -d
+    detached state
 
 
 
