@@ -18,8 +18,9 @@ VALUES
     ('Salary', 'INCOME'),
     ('Rental Income', 'INCOME'),
     ('Government Grants', 'INCOME'),
-    ('Take Out', 'INCOME'),
-    ('Amazon', 'INCOME'),
-    ('Temu', 'INCOME');
+    ('Take Out', 'EXPENSE'),
+    ('Amazon', 'EXPENSE'),
+    ('Temu', 'EXPENSE'),
+    ('Card payment', 'INCOME');
 
 

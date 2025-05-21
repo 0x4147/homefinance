@@ -72,10 +72,10 @@ public class BatchConfig {
 //        tokenizer.setStrict(false);
 
         if ("amex".equalsIgnoreCase(sourceType)) {
-            tokenizer.setNames("date", "entity", "amount");
+            tokenizer.setNames("date", "entity", "person", "amount");
             lineMapper.setFieldSetMapper(amexTransactionFieldMapper);
         } else if ("cibc".equalsIgnoreCase(sourceType)) {
-            tokenizer.setNames("date", "entity", "amount");
+            tokenizer.setNames("date", "entity", "amount out", "amount in", "person");
             lineMapper.setFieldSetMapper(cibcTransactionFieldMapper);
         }
 

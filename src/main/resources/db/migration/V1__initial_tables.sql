@@ -10,7 +10,7 @@ CREATE TABLE Person (
 CREATE TABLE Category (
                           category_id INT AUTO_INCREMENT PRIMARY KEY,
                           name VARCHAR(255) NOT NULL,
-                          type ENUM('Income', 'Expense') NOT NULL, -- Categorizes whether it's for income or expense
+                          type ENUM('INCOME', 'EXPENSE') NOT NULL, -- Categorizes whether it's for income or expense
                           description TEXT,
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
