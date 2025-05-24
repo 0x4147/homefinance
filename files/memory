@@ -1,0 +1,12 @@
+added fix to buyg with April data not showing
+because amex csv file didnt have name for payment.
+need to now test and then double check calculations
+
+
+------
+
+Add heat and electrity  - new transaction BILL
+add Ekta bill payment - new transaction RENTALBILLINCOME
+Add Ekta rental payment RENTALRENTINCOME
+
+Check why some transactions don't show up

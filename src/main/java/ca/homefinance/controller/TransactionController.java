@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
@@ -106,37 +107,35 @@ public class TransactionController {
 
             for (Transaction txn : expensesPaidFromPersonalAccounts) {
                 if (txn.getAccount() == Transaction.AccountType.ASANKA) {
-                    totalAsankaExpenses = totalAsankaExpenses.add(txn.getAmount());
+                    totalAsankaExpenses = totalAsankaExpenses.add(txn.getAmount().negate());
                 } else if (txn.getAccount() == Transaction.AccountType.DIVYA) {
-                    totalDivyaExpenses = totalDivyaExpenses.add(txn.getAmount());
+                    totalDivyaExpenses = totalDivyaExpenses.add(txn.getAmount().negate());
                 }
             }
 
             for (Transaction txn : cardPayments) {
                 if (txn.getPerson().getPersonId() == 1) {
-                    totalCardPaymentsAsanka = totalCardPaymentsAsanka.add(txn.getAmount());
+                    totalCardPaymentsAsanka = totalCardPaymentsAsanka.add(txn.getAmount().negate());
                 } else if (txn.getPerson().getPersonId() == 2) {
-                    totalCardPaymentsDivya = totalCardPaymentsDivya.add(txn.getAmount());
+                    totalCardPaymentsDivya = totalCardPaymentsDivya.add(txn.getAmount().negate());
                 }
             }
 
             BigDecimal totalAsankaPaid = totalAsankaExpenses.add(totalCardPaymentsAsanka);
             BigDecimal totalDivyaPaid = totalDivyaExpenses.add(totalCardPaymentsDivya);
-
             BigDecimal difference = totalDivyaPaid.subtract(totalAsankaPaid);
-            int compare = difference.compareTo(BigDecimal.ZERO);
 
-            monthlyBalanceResponseDto.setBalanceAmount(difference.toString());
+            monthlyBalanceResponseDto.setBalanceAmount((difference.divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP)).toString());
             monthlyBalanceResponseDto.setAsankaPaid(totalAsankaPaid.toString());
             monthlyBalanceResponseDto.setDivyaPaid(totalDivyaPaid.toString());
             monthlyBalanceResponseDto.setMonthAndYear(month + ", " + year);
 
-            if (compare > 0) {
-                // Asanka paid more
-                monthlyBalanceResponseDto.setWhoOwes("Divya");
-            } else if (compare < 0) {
+            if (difference.compareTo(BigDecimal.ZERO) > 0) {
                 // Divya paid more
                 monthlyBalanceResponseDto.setWhoOwes("Asanka");
+            } else if (difference.compareTo(BigDecimal.ZERO) < 0) {
+                // Asanka paid more
+                monthlyBalanceResponseDto.setWhoOwes("Divya");
             } else {
                 // Both paid equally
             }
@@ -156,10 +155,12 @@ public class TransactionController {
             List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
             for (Transaction tx : transactions) {
-                String category = tx.getCategory() == null ? "Unknown" : tx.getCategory().getName();
-                BigDecimal amount = tx.getAmount();
-                totals.put(category, totals.getOrDefault(category, BigDecimal.ZERO).add(amount));
-                details.computeIfAbsent(category, k -> new ArrayList<>()).add(tx);
+                if (tx.getTransactionType().equals(Transaction.TransactionType.EXPENSE)) {
+                    String category = tx.getCategory() == null ? "Unknown" : tx.getCategory().getName();
+                    BigDecimal amount = tx.getAmount();
+                    totals.put(category, totals.getOrDefault(category, BigDecimal.ZERO).add(amount));
+                    details.computeIfAbsent(category, k -> new ArrayList<>()).add(tx);
+                }
             }
         } catch (Exception e){
             log.error("error preparing categories", e);
@@ -178,10 +179,12 @@ public class TransactionController {
         List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
         for (Transaction tx : transactions) {
-            String entity = tx.getEntity();
-            BigDecimal amount = tx.getAmount();
-            totals.put(entity, totals.getOrDefault(entity, BigDecimal.ZERO).add(amount));
-            details.computeIfAbsent(entity, k -> new ArrayList<>()).add(tx);
+            if (tx.getTransactionType().equals(Transaction.TransactionType.EXPENSE)) {
+                String entity = tx.getEntity();
+                BigDecimal amount = tx.getAmount();
+                totals.put(entity, totals.getOrDefault(entity, BigDecimal.ZERO).add(amount));
+                details.computeIfAbsent(entity, k -> new ArrayList<>()).add(tx);
+            }
         }
 
         return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);
@@ -197,12 +200,14 @@ public class TransactionController {
         List<Transaction> transactions = transactionRepository.findByDateBetween(startDate, endDate);
 
         for (Transaction tx : transactions) {
-            YearMonth ym = YearMonth.from(tx.getDate());
-            String monthKey = ym.toString(); // e.g. "2025-04"
+            if (tx.getTransactionType().equals(Transaction.TransactionType.EXPENSE)) {
+                YearMonth ym = YearMonth.from(tx.getDate());
+                String monthKey = ym.toString(); // e.g. "2025-04"
 
-            BigDecimal amount = tx.getAmount();
-            totals.put(monthKey, totals.getOrDefault(monthKey, BigDecimal.ZERO).add(amount));
-            details.computeIfAbsent(monthKey, k -> new ArrayList<>()).add(tx);
+                BigDecimal amount = tx.getAmount();
+                totals.put(monthKey, totals.getOrDefault(monthKey, BigDecimal.ZERO).add(amount));
+                details.computeIfAbsent(monthKey, k -> new ArrayList<>()).add(tx);
+            }
         }
 
         return new ResponseEntity<>(new TransactionSummary(totals, details), HttpStatus.OK);

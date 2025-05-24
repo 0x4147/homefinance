@@ -1,0 +1,6 @@
+Prepare AMEX csv file:
+
+Open excel file and remove all unwanted rows - leave only data
+save as csv
+Open your .csv file in Notepad++.
+Go to the top menu: Encoding > Convert to UTF-8

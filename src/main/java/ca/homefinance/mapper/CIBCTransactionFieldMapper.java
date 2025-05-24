@@ -42,8 +42,8 @@ public class CIBCTransactionFieldMapper implements FieldSetMapper<Transaction> {
             }
             else {
                 String amountInStr = fieldSet.readString("amount in");
-                transaction.setAmount(new BigDecimal(amountInStr));
-                transaction.setTransactionType(GeneralHelper.determineTransactionType(transaction.getEntity(), transaction.getAmount().negate()));
+                transaction.setAmount(new BigDecimal(amountInStr).negate());
+                transaction.setTransactionType(GeneralHelper.determineTransactionType(transaction.getEntity(), transaction.getAmount()));
             }
 
             transaction.setAccount(Transaction.AccountType.CIBC);
