@@ -1,6 +1,7 @@
-Prepare AMEX csv file:
-
-Open excel file and remove all unwanted rows - leave only data
-save as csv
-Open your .csv file in Notepad++.
-Go to the top menu: Encoding > Convert to UTF-8
+Add into Transaction table
+    is_shared (is_shared BOOLEAN DEFAULT FALSE)
+    created_by -> batch, manual
+    created_time
+    modified_by
+    modified_time
+    version_no

@@ -10,3 +10,8 @@ add Ekta bill payment - new transaction RENTALBILLINCOME
 Add Ekta rental payment RENTALRENTINCOME
 
 Check why some transactions don't show up
+
+----
+
+Do a clean build, add the csv files run the two scripts then add the enbridge script too
+

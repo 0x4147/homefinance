@@ -3,7 +3,6 @@ package ca.homefinance.controller;
 import ca.homefinance.dto.MonthlyBalanceResponseDto;
 import ca.homefinance.dto.TransactionDto;
 import ca.homefinance.dto.TransactionSummary;
-import ca.homefinance.entity.Category;
 import ca.homefinance.entity.Transaction;
 import ca.homefinance.repository.CategoryRepository;
 import ca.homefinance.repository.PersonRepository;
@@ -21,7 +20,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,10 +83,16 @@ public class TransactionController {
             LocalDate startLocalDate = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month), 1);
             LocalDate endLocalDate = startLocalDate.withDayOfMonth(startLocalDate.lengthOfMonth());
 
-            BigDecimal totalAsankaExpenses = BigDecimal.ZERO;
-            BigDecimal totalDivyaExpenses = BigDecimal.ZERO;
+            BigDecimal totalExpensePaidFromPersonalAccountsAsanka = BigDecimal.ZERO;
+            BigDecimal totalExpensePaidFromPersonalAccountsDivya = BigDecimal.ZERO;
             BigDecimal totalCardPaymentsAsanka = BigDecimal.ZERO;
             BigDecimal totalCardPaymentsDivya = BigDecimal.ZERO;
+            BigDecimal totalRentalBillIncomeAsanka = BigDecimal.ZERO;
+            BigDecimal totalRentalBillIncomeDivya = BigDecimal.ZERO;
+            BigDecimal totalRentalRentIncomeAsanka = BigDecimal.ZERO;
+            BigDecimal totalRentalRentIncomeDivya = BigDecimal.ZERO;
+            BigDecimal totalBillsPaidFromPersonalAccountsAsanka = BigDecimal.ZERO;
+            BigDecimal totalBillsPaidFromPersonalAccountsDivya = BigDecimal.ZERO;
             MonthlyBalanceResponseDto monthlyBalanceResponseDto = new MonthlyBalanceResponseDto();
 
             List<Transaction> expensesPaidFromPersonalAccounts =
@@ -105,11 +109,32 @@ public class TransactionController {
                             Arrays.asList(Transaction.AccountType.CIBC, Transaction.AccountType.AMEX),
                             Arrays.asList(Transaction.TransactionType.CARDPAYMENT));
 
+            List<Transaction> rentalBillIncome =
+                    transactionService.searchTransactionByDateRangeAccountTypeTransactionType(
+                            startLocalDate,
+                            endLocalDate,
+                            Arrays.asList(Transaction.AccountType.DIVYA, Transaction.AccountType.ASANKA),
+                            Arrays.asList(Transaction.TransactionType.RENTALBILLINCOME));
+
+            List<Transaction> rentalRentIncome =
+                    transactionService.searchTransactionByDateRangeAccountTypeTransactionType(
+                            startLocalDate,
+                            endLocalDate,
+                            Arrays.asList(Transaction.AccountType.DIVYA, Transaction.AccountType.ASANKA),
+                            Arrays.asList(Transaction.TransactionType.RENTALRENTINCOME));
+
+            List<Transaction> billsPaidByFromPersonalAccounts =
+                    transactionService.searchTransactionByDateRangeAccountTypeTransactionType(
+                            startLocalDate,
+                            endLocalDate,
+                            Arrays.asList(Transaction.AccountType.DIVYA,Transaction.AccountType.ASANKA),
+                            Arrays.asList(Transaction.TransactionType.BILL));
+
             for (Transaction txn : expensesPaidFromPersonalAccounts) {
                 if (txn.getAccount() == Transaction.AccountType.ASANKA) {
-                    totalAsankaExpenses = totalAsankaExpenses.add(txn.getAmount().negate());
+                    totalExpensePaidFromPersonalAccountsAsanka = totalExpensePaidFromPersonalAccountsAsanka.add(txn.getAmount());
                 } else if (txn.getAccount() == Transaction.AccountType.DIVYA) {
-                    totalDivyaExpenses = totalDivyaExpenses.add(txn.getAmount().negate());
+                    totalExpensePaidFromPersonalAccountsDivya = totalExpensePaidFromPersonalAccountsDivya.add(txn.getAmount());
                 }
             }
 
@@ -121,20 +146,59 @@ public class TransactionController {
                 }
             }
 
-            BigDecimal totalAsankaPaid = totalAsankaExpenses.add(totalCardPaymentsAsanka);
-            BigDecimal totalDivyaPaid = totalDivyaExpenses.add(totalCardPaymentsDivya);
-            BigDecimal difference = totalDivyaPaid.subtract(totalAsankaPaid);
+            for (Transaction txn : rentalBillIncome) {
+                if (txn.getAccount().equals(Transaction.AccountType.ASANKA)) {
+                    totalRentalBillIncomeAsanka = totalRentalBillIncomeAsanka.add(txn.getAmount());
+                } else if (txn.getAccount().equals(Transaction.AccountType.DIVYA)) {
+                    totalRentalBillIncomeDivya = totalRentalBillIncomeDivya.add(txn.getAmount());
+                }
+            }
 
-            monthlyBalanceResponseDto.setBalanceAmount((difference.divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP)).toString());
-            monthlyBalanceResponseDto.setAsankaPaid(totalAsankaPaid.toString());
-            monthlyBalanceResponseDto.setDivyaPaid(totalDivyaPaid.toString());
+            for (Transaction txn : rentalRentIncome) {
+                if (txn.getAccount().equals(Transaction.AccountType.ASANKA)) {
+                    totalRentalRentIncomeAsanka = totalRentalRentIncomeAsanka.add(txn.getAmount());
+                } else if (txn.getAccount().equals(Transaction.AccountType.DIVYA)) {
+                    totalRentalRentIncomeDivya = totalRentalRentIncomeDivya.add(txn.getAmount());
+                }
+            }
+
+            for (Transaction txn : billsPaidByFromPersonalAccounts) {
+                if (txn.getAccount().equals(Transaction.AccountType.ASANKA)) {
+                    totalBillsPaidFromPersonalAccountsAsanka = totalBillsPaidFromPersonalAccountsAsanka.add(txn.getAmount());
+                } else if (txn.getAccount().equals(Transaction.AccountType.DIVYA)) {
+                    totalBillsPaidFromPersonalAccountsDivya = totalBillsPaidFromPersonalAccountsDivya.add(txn.getAmount());
+                }
+            }
+
+
+            BigDecimal totalExpensesMinusIncomeAsanka = totalExpensePaidFromPersonalAccountsAsanka
+                    .add(totalCardPaymentsAsanka)
+                    .add(totalBillsPaidFromPersonalAccountsAsanka)
+                    .subtract(totalRentalBillIncomeAsanka)
+                    .subtract(totalRentalRentIncomeAsanka);
+
+            BigDecimal totalExpensesMinusIncomeDivya = totalExpensePaidFromPersonalAccountsDivya
+                    .add(totalCardPaymentsDivya)
+                    .add(totalBillsPaidFromPersonalAccountsDivya)
+                    .subtract(totalRentalBillIncomeDivya)
+                    .subtract(totalRentalRentIncomeDivya);
+
+            //if minus value they owe the other person, if plus the other person owes.
+            BigDecimal amountDividedByTwoAsanka = totalExpensesMinusIncomeAsanka.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
+            BigDecimal amountDividedByTwoDivya = totalExpensesMinusIncomeDivya.divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
+
+            BigDecimal difference = amountDividedByTwoDivya.subtract(amountDividedByTwoAsanka);
+
+            monthlyBalanceResponseDto.setBalanceAmount(difference.abs().toString());
+            monthlyBalanceResponseDto.setAsankaPaid(totalExpensesMinusIncomeAsanka.abs().toString());
+            monthlyBalanceResponseDto.setDivyaPaid(totalExpensesMinusIncomeDivya.abs().toString());
             monthlyBalanceResponseDto.setMonthAndYear(month + ", " + year);
 
             if (difference.compareTo(BigDecimal.ZERO) > 0) {
-                // Divya paid more
+                // Asanka owe Divya
                 monthlyBalanceResponseDto.setWhoOwes("Asanka");
             } else if (difference.compareTo(BigDecimal.ZERO) < 0) {
-                // Asanka paid more
+                // Divya owe Asanka
                 monthlyBalanceResponseDto.setWhoOwes("Divya");
             } else {
                 // Both paid equally
