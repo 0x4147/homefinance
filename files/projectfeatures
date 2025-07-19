@@ -338,6 +338,18 @@ Phase 1:
 			Have he option to select either Amex or CIBC then submit
 			javascipt then calls the approporite backend or backend decides which bank it is from
 
+    Deploy to k8s
+
+    Helm
+
+    CI/CD
+
+    Finish up UI
+
+
+
+Phase 2:
+
 	Add new columns, logic and java side
 
     Make use of payment table to keep track of payments
@@ -422,7 +434,6 @@ Phase 1:
 		and OpenAI API matching to categorize transactions
 
 
-Phase 2:
 
 	Integrate vue
 

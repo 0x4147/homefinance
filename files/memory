@@ -15,3 +15,13 @@ Check why some transactions don't show up
 
 Do a clean build, add the csv files run the two scripts then add the enbridge script too
 
+
+------
+
+Add kubernetes and pipleline - cicd
+
+Come up with the solution to double check if the logic is correct and the results are correct everything is correct
+
+
+
+
