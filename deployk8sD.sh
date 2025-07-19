@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e # Exit on any error
+set -e
 
 echo "🧹 Cleaning up..."
 kubectl delete -f k8s/ --ignore-not-found=true
@@ -9,7 +9,7 @@ echo "⏳ Waiting a moment for cleanup..."
 sleep 5
 
 echo "🔧 Setting up Docker environment..."
-eval "$(minikube docker-env --shell bash)"
+eval "$(minikube docker-env)"
 
 echo "🏗️ Building application image..."
 docker build -t homefinance:latest .
@@ -26,5 +26,9 @@ kubectl get all
 
 echo "🌐 Service URL:"
 minikube service homefinance --url
+
+# Enable the dashboard addon (if not already enabled) / Open the dashboard in your browser
+minikube addons enable dashboard
+minikube dashboard
 
 echo "✅ Done!"

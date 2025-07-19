@@ -24,8 +24,23 @@ docker images | grep homefinance
 # Restart the entire deployment
 kubectl rollout restart deployment/homefinance
 
+
+# Delete the current deployment and redeploy
+kubectl delete deployment homefinance
+kubectl apply -f your-deployment.yaml
+
 # Check the homefinance pod logs
 kubectl logs -l app=homefinance
+kubectl logs homefinance-69bb6467d4-f4sj7
+
+# Check what gets applied:
+kubectl apply -f k8s/ --dry-run=client -o yaml
+
+# Enable the dashboard addon (if not already enabled)
+minikube addons enable dashboard
+
+# Open the dashboard in your browser
+minikube dashboard
 
 # Get detailed pod information
 kubectl describe pod -l app=homefinance
