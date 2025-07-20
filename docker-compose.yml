@@ -35,4 +35,4 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
 
 volumes:
-  mysql-data:
+  mysql-prod-data:

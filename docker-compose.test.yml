@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: homefinance-mysql-test
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=homefinancedb_test
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  homefinance:
+    image: homefinance:latest
+    container_name: homefinance-test
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8585:8585"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/homefinancedb_test?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_PROFILES_ACTIVE=test

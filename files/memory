@@ -22,6 +22,16 @@ Add kubernetes and pipleline - cicd
 
 Come up with the solution to double check if the logic is correct and the results are correct everything is correct
 
+-------
 
+K8s is running - added ci/cd pipeline
+
+Not tested - need to understand it and test it
+
+ciccd stuff is in cdcd branch
+
+Test the pipeline components
+    docker-compose -f docker-compose.test.yml up
+    curl http://localhost:8585/health
 
 
