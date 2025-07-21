@@ -477,3 +477,50 @@ Phase 3:
 		personal
 		rental business
 		Vehicle
+
+
+-------------------
+
+Dashboard
+
+    Card - horizontal
+         1. Welcome Header
+        Greeting (e.g., “Good morning, Asanka!”)
+        Current date and time
+
+    Card - horizontal
+        AI summerization of this months stuff
+
+    Card - table
+        Card 1
+            Spending by category for past three months
+            spending by merchant past three months
+            Spending my month - past three months
+
+    On the left the other options to select
+
+Add (single) transaction
+    Check for duplicates
+Add bulk transaction
+    Check for duplicates
+    AI categorizing
+    backup data
+
+View transactions
+
+Spending graphs
+
+Payment balancing function
+    	Add more details into the balancing UI
+            What months have been balanced
+            How much each individual
+                expenses from personal paid
+                rent received
+                rental bill received
+                Mortgage paid
+                bills paid
+
+upload a receipt
+    it then attaches itself to a transaction
+    detects all the grocery items
+    then logs them - later check what I boaugt
